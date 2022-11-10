@@ -11,9 +11,9 @@ const Credits = (props) => {
   // Create the list of Credits items
   let creditsView = () => {
     const { credits } = props;
-    return credits.map((debit) => {  // Extract "id", "amount", "description" and "date" properties of each credits JSON array element
-      let date = credits.date.slice(0,10);
-      return <li key={credits.id}>{credits.amount} {credits.description} {date}</li>
+    return credits.map((credit) => {  // Extract "id", "amount", "description" and "date" properties of each credits JSON array element
+      let date = credit.date.slice(0,10);
+      return <li key={credit.id}>{credit.amount} {credit.description} {date}</li>
     }) 
   }
   return (
