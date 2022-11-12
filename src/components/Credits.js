@@ -6,6 +6,7 @@ Note: You need to work on this file for the Assignment.
 ==================================================*/
 import {Link} from 'react-router-dom';
 import AccountBalance from './AccountBalance';
+import React, {Component} from 'react';
 
 const Credits = (props) => {
   // Create the list of Credits items
@@ -16,6 +17,7 @@ const Credits = (props) => {
       return <li key={credit.id}>{credit.amount} {credit.description} {date}</li>
     }) 
   }
+  // Render the list of credit items and a form to input new credit item
   return (
     <div>
       <h1>Credits</h1>

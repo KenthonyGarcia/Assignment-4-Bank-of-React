@@ -6,6 +6,7 @@ It contains the top-level state.
 ==================================================*/
 import React, {Component} from 'react';
 import {BrowserRouter as Router, Route} from 'react-router-dom';
+import axios from 'axios';
 
 // Import other components
 import Home from './components/Home';
@@ -27,6 +28,25 @@ class App extends Component {
       }
     }
   }
+  async componentDidMount() 
+  {
+    let credit_total = 0
+    //retrieving credits from api
+    try 
+    {
+      let result = await axios.get('https://moj-api.herokuapp.com/credits');
+      this.setState({creditList: result.data});//setting creditList to the data from result
+      
+    }
+    catch (error) 
+    {
+      if (error.result) 
+      {
+        console.log(error.result.data);
+        console.log(error.result.status);
+      }
+    }
+  }
 
   // Update state's currentUser (userName) after "Log In" button is clicked
   mockLogIn = (logInInfo) => {  
@@ -34,7 +54,7 @@ class App extends Component {
     newUser.userName = logInInfo.userName
     this.setState({currentUser: newUser})
   }
-
+  
   // Create Routes and React elements to be rendered using React components
   render() {  
     // Create React elements and pass input props to components
