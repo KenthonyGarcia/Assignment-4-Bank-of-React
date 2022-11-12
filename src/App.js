@@ -19,9 +19,9 @@ class App extends Component {
   constructor() {  // Create and initialize state
     super(); 
     this.state = {
-      accountBalance: 1234567.89,
-      creditList: [],
-      debitList: [],
+      accountBalance: 0.00,
+      credits: [],
+      debits: [],
       currentUser: {
         userName: 'Joe Smith',
         memberSince: '11/22/99',
@@ -35,7 +35,10 @@ class App extends Component {
     try 
     {
       let result = await axios.get('https://moj-api.herokuapp.com/credits');
-      this.setState({creditList: result.data});//setting creditList to the data from result
+      this.setState({credits: result.data});//setting creditList to the data from result
+      for (let credit of this.state.credits) { 
+        credit_total += credit.amount;//getting the total credits that will be subtracted by total debits for accountbalance
+      }
       
     }
     catch (error) 
@@ -46,6 +49,21 @@ class App extends Component {
         console.log(error.result.status);
       }
     }
+    this.setState({accountBalance:Math.round(credit_total * 100) / 100});//dividing number by 100 to get the hundredths place
+  }
+  
+  addCredit = (credit) => 
+  {
+    let temp = {}; //create a temporary object that will contain the added credits description, amount, and date.
+    temp.id = credit.id;
+    temp.description = credit.description;
+    temp.amount = Math.round(credit.amount * 100)/100;
+    temp.date = credit.date;
+    let curCredits = this.state.credits; //setting new list to old list
+    curCredits.push(temp);
+    this.setState({credit: curCredits});
+    //updating account balance
+    this.setState({accountBalance: Math.round((Number(this.state.accountBalance) + Number(credit.amount)) * 100) / 100}); //set account balance to the new balance
   }
 
   // Update state's currentUser (userName) after "Log In" button is clicked
@@ -63,8 +81,8 @@ class App extends Component {
       <UserProfile userName={this.state.currentUser.userName} memberSince={this.state.currentUser.memberSince} />
     );
     const LogInComponent = () => (<LogIn user={this.state.currentUser} mockLogIn={this.mockLogIn} />)
-    const CreditsComponent = () => (<Credits credits={this.state.creditList}/>)
-    const DebitsComponent = () => (<Debits debits={this.state.debitList} />) 
+    const CreditsComponent = () => (<Credits credits={this.state.credits} accountBalance={this.state.accountBalance} addCredit = {this.addCredit}/>)
+    const DebitsComponent = () => (<Debits debits={this.state.debits} />) 
 
     // Important: Include the "basename" in Router, which is needed for deploying the React app to GitHub Pages
     return (

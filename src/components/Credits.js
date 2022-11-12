@@ -6,7 +6,6 @@ Note: You need to work on this file for the Assignment.
 ==================================================*/
 import {Link} from 'react-router-dom';
 import AccountBalance from './AccountBalance';
-import React, {Component} from 'react';
 
 const Credits = (props) => {
   // Create the list of Credits items
@@ -17,15 +16,26 @@ const Credits = (props) => {
       return <li key={credit.id}>{credit.amount} {credit.description} {date}</li>
     }) 
   }
+  const handleSubmit = (event) =>
+  {
+    event.preventDefault();
+    let date = new Date().toISOString(); //generate the date for the object
+    let credit = {
+      amount: event.target.amount.value,
+      date: date,
+      description: event.target.description.value,
+    }//credit json object to be added to list
+    props.addCredit(credit); //add the new object to the credit list
+  }
   // Render the list of credit items and a form to input new credit item
   return (
     <div>
       <h1>Credits</h1>
-      <AccountBalance accountBalance={props.accountBalance}/>  
+      <AccountBalance accountBalance={props.accountBalance}/> 
       <br/>
       
       {creditsView()}
-      <form onSubmit={props.addCredit}>
+      <form onSubmit={event => {handleSubmit(event)} }>
         <input type="text" name="description" />
         <input type="number" name="amount" />
         <button type="submit">Add Credit</button>
