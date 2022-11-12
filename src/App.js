@@ -31,12 +31,14 @@ class App extends Component {
   async componentDidMount() 
   {
     let credit_total = 0
+    let debit_total = 0
     //retrieving credits from api
     try 
     {
       let result = await axios.get('https://moj-api.herokuapp.com/credits');
       this.setState({credits: result.data});//setting creditList to the data from result
-      for (let credit of this.state.credits) { 
+      for (let credit of this.state.credits) 
+      { 
         credit_total += credit.amount;//getting the total credits that will be subtracted by total debits for accountbalance
       }
       
@@ -49,7 +51,25 @@ class App extends Component {
         console.log(error.result.status);
       }
     }
-    this.setState({accountBalance:Math.round(credit_total * 100) / 100});//dividing number by 100 to get the hundredths place
+    try 
+    {
+      let result = await axios.get('https://moj-api.herokuapp.com/debits');
+      this.setState({debits: result.data});//setting debitList to the data from result
+      for (let debit of this.state.credits) 
+      { 
+        debit_total += debit.amount;//getting the total debits
+      }
+      
+    }
+    catch (error) 
+    {
+      if (error.result) 
+      {
+        console.log(error.result.data);
+        console.log(error.result.status);
+      }
+    }
+    this.setState({accountBalance:Math.round((credit_total-debit_total) * 100) / 100});//dividing number by 100 to get the hundredths place
   }
   
   addCredit = (credit) => 
@@ -64,6 +84,19 @@ class App extends Component {
     this.setState({credit: curCredits});
     //updating account balance
     this.setState({accountBalance: Math.round((Number(this.state.accountBalance) + Number(credit.amount)) * 100) / 100}); //set account balance to the new balance
+  }
+  addDebit = (debit) => 
+  {
+    let temp = {}; //create a temporary object that will contain the added debits description, amount, and date.
+    temp.id = debit.id;
+    temp.description = debit.description;
+    temp.amount = Math.round(debit.amount * 100)/100;
+    temp.date = debit.date;
+    let curDebits = this.state.debits; //setting new list to old list
+    curDebits.push(temp);
+    this.setState({credit: curDebits});
+    //updating account balance
+    this.setState({accountBalance: Math.round((Number(this.state.accountBalance) + Number(debit.amount)) * 100) / 100}); //set account balance to the new balance
   }
 
   // Update state's currentUser (userName) after "Log In" button is clicked

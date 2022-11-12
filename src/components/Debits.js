@@ -16,15 +16,26 @@ const Debits = (props) => {
       return <li key={debit.id}>{debit.amount} {debit.description} {date}</li>
     }) 
   }
+  const handleSubmit = (event) =>
+  {
+    event.preventDefault();
+    let date = new Date().toISOString(); //generate the date for the object
+    let debit = {
+      amount: event.target.amount.value,
+      date: date,
+      description: event.target.description.value,
+    }//credit json object to be added to list
+    props.addDebit(debit); //add the new object to the credit list
+  }
   // Render the list of Debit items and a form to input new Debit item
   return (
     <div>
       <h1>Debits</h1>
-      
-
+      <AccountBalance accountBalance={props.accountBalance}/>
+      <br/>
       {debitsView()}
 
-      <form onSubmit={props.addDebit}>
+      <form onSubmit={handleSubmit}>
         <input type="text" name="description" />
         <input type="number" name="amount" />
         <button type="submit">Add Debit</button>
