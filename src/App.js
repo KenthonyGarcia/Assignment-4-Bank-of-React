@@ -74,26 +74,24 @@ class App extends Component {
   
   addCredit = (credit) => 
   {
-    let temp = {}; //create a temporary object that will contain the added credits description, amount, and date.
-    temp.id = credit.id;
-    temp.description = credit.description;
-    temp.amount = Math.round(credit.amount * 100)/100;
-    temp.date = credit.date;
+    let newCredit = {}; //create a temporary object that will contain the added credits description, amount, and date.
+    newCredit.description = credit.description;
+    newCredit.amount = Math.round(credit.amount * 100)/100;
+    newCredit.date = credit.date;
     let curCredits = this.state.credits; //setting new list to old list
-    curCredits.push(temp);
+    curCredits.push(newCredit);
     this.setState({credit: curCredits});
     //updating account balance
     this.setState({accountBalance: Math.round((Number(this.state.accountBalance) + Number(credit.amount)) * 100) / 100}); //set account balance to the new balance
   }
   addDebit = (debit) => 
   {
-    let temp = {}; //create a temporary object that will contain the added debits description, amount, and date.
-    temp.id = debit.id;
-    temp.description = debit.description;
-    temp.amount = Math.round(debit.amount * 100)/100;
-    temp.date = debit.date;
+    let newDebit = {}; //create a temporary object that will contain the added debits description, amount, and date.
+    newDebit.description = debit.description;
+    newDebit.amount = Math.round(debit.amount * 100)/100;
+    newDebit.date = debit.date;
     let curDebits = this.state.debits; //setting new list to old list
-    curDebits.push(temp);
+    curDebits.push(newDebit);
     this.setState({debit: curDebits});
     //updating account balance
     this.setState({accountBalance: Math.round((Number(this.state.accountBalance) - Number(debit.amount)) * 100) / 100}); //set account balance to the new balance
